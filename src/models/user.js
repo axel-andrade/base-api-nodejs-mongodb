@@ -1,7 +1,7 @@
-'use strict';
-
 const mongoose = require('mongoose');
-const schema = new mongoose.Schema({
+const bcrypt = require('bcryptjs');
+
+const UserSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true
@@ -17,7 +17,7 @@ const schema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
-        trim: true
+        select: true
     },
     isAdmin: {
         type: Boolean,
@@ -31,6 +31,20 @@ const schema = new mongoose.Schema({
     },
 });
 
-schema.set('timestamps',true);
+//methods 
+UserSchema.methods.comparePassword = function(plaintext, callback) {
+    return callback(null, bcrypt.compareSync(plaintext, this.password));
+};
 
-module.exports = mongoose.model("User", schema);
+//before save
+UserSchema.pre("save", async function (next) {
+    if (!this.isModified("password")) {
+        return next();
+    }
+    this.password = await bcrypt.hashSync(this.password, 10);
+    next();
+});
+
+UserSchema.set('timestamps', true);
+
+module.exports = mongoose.model("User", UserSchema);
