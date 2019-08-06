@@ -1,4 +1,4 @@
-function Messages(language) {
+module.exports = (language) => {
     language = language || "pt_br";
     switch (language) {
         case "br":
@@ -12,13 +12,7 @@ function Messages(language) {
         case "es":
         case "es_es":
             return require('./es_es.js');
-        case "ja":
-        case "jp":
-        case "ja_ja":
-            return require('./ja_ja.js');
         default:
             return require('./pt_br.js');
     }
 }
-
-module.exports = Messages;

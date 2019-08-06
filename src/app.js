@@ -15,13 +15,16 @@ mongoose.connect(conf.databaseUri, {
 });
 
 //carregando models
-const Product = require('./models/product');
-const User = require('./models/user');
+const Product = require('./models/Product');
+const User = require('./models/User');
+const Order = require('./models/Order');
 
 //carregando rotas
-const index = require('./routes/index-route.js');
-const productRoutes = require('./routes/product-route.js');
-const userRoutes = require('./routes/user-route.js');
+const index = require('./routes');
+const sessionRoutes = require('./routes/SessionRoute');
+const productRoutes = require('./routes/ProductRoute');
+const userRoutes = require('./routes/UserRoute');
+const orderRoutes = require('./routes/OrderRoute');
 
 
 //configurando para utilizar o body parser para converter para formato json
@@ -32,6 +35,8 @@ app.use(bodyParser.json());
 app.use('/', index);
 app.use('/products', productRoutes);
 app.use('/user', userRoutes);
+app.use('/order', orderRoutes);
+app.use('/', sessionRoutes);
 
 
 module.exports = app;

@@ -1,7 +1,8 @@
 {
-
-  "port": 1982,
-  "server": "http://localhost:1982/use",
+  "port": 3000,
+  "server": "http://localhost:3000",
+  "appId": "65e9a217-c3af-48df-b1ba-4b0cae6da381",
+  "tokenExpirationTime": 20000,
   "databaseUri": "mongodb://localhost:27017/baseapi",
   "FacebookID": [
     "2431661817063354"

@@ -1,5 +1,5 @@
 'use strict';
-const Messages = require('../../locales/Messages');
+const Messages = require('../../locales');
 const conf = require('config');
 var fs = require('fs');
 const sendgrid = require('@sendgrid/mail');

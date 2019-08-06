@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const conf = require('config');
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -29,10 +31,15 @@ const UserSchema = new mongoose.Schema({
         required: false,
         default: false
     },
+    isGoogle: {
+        type: Boolean,
+        required: false,
+        default: false
+    },
 });
 
 //methods 
-UserSchema.methods.comparePassword = function(plaintext, callback) {
+UserSchema.methods.comparePassword = function (plaintext, callback) {
     return callback(null, bcrypt.compareSync(plaintext, this.password));
 };
 
@@ -44,6 +51,14 @@ UserSchema.pre("save", async function (next) {
     this.password = await bcrypt.hashSync(this.password, 10);
     next();
 });
+
+UserSchema.statics = {
+    generateToken(id) {
+        return jwt.sign({ id }, conf.appId, {
+            expiresIn: conf.tokenExpirationTime
+        });
+    }
+}
 
 UserSchema.set('timestamps', true);
 
