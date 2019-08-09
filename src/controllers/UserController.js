@@ -3,6 +3,8 @@
 const Messages = require('../../locales');
 const repository = require('../repositories/UserRepository');
 const Mail = require('../services/email-service.js');
+const mongoose = require('mongoose');
+const User = mongoose.model('User');
 
 class UserController {
     async getById(req, res) {
@@ -29,18 +31,22 @@ class UserController {
 
     async login(req, res) {
         try {
-            let user = await User.findOne({ email: req.body.email });
+            console.log("body", req.body);
+            const { email, password } = req.body;
+            let user = await User.findOne({ email });
             if (!user) {
                 return res.status(400).send({ message: "The username does not exist" });
             }
-            user.comparePassword(req.body.password, (error, match) => {
+            await user.comparePassword(password, (error, match) => {
                 if (!match) {
                     return res.status(400).send({ message: "The password is invalid" });
                 }
             });
-            res.status(201).send({ message: "The username and password combination is correct!" });
+            let output = { user: user.toJSON() };
+            output.user.token = User.generateToken(user.id);
+            return res.status(201).send(output);
         } catch (error) {
-            res.status(500).send(error);
+            res.status(400).send({ code: 101, error: 'Object not found' });
         }
     };
 

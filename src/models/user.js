@@ -39,12 +39,12 @@ const UserSchema = new mongoose.Schema({
 });
 
 //methods 
-UserSchema.methods.comparePassword = function (plaintext, callback) {
+UserSchema.methods.comparePassword = (plaintext, callback) => {
     return callback(null, bcrypt.compareSync(plaintext, this.password));
 };
 
 //before save
-UserSchema.pre("save", async function (next) {
+UserSchema.pre("save", async (next) => {
     if (!this.isModified("password")) {
         return next();
     }
