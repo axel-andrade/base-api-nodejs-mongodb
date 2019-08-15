@@ -3,6 +3,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const validate = require('express-validation');
+const Youch = require('youch');
 const conf = require('config');
 
 const app = express();
@@ -38,5 +40,18 @@ app.use('/user', userRoutes);
 app.use('/order', orderRoutes);
 app.use('/', sessionRoutes);
 
+//configurando exception handling
+app.use(async (err, req, res, next) => {
+    if (err instanceof validate.ValidationError) {
+        return res.status(err.status).json(err);
+    }
+
+    if (process.env.NODE_ENV !== 'production') {
+        const youch = new Youch(err);
+        return res.json(await youch.toJSON());
+    }
+
+    return res.status(err.status || 500).json({ error: "Internal server error" })
+});
 
 module.exports = app;

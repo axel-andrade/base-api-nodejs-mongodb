@@ -8,8 +8,10 @@ exports.create = async (data) => {
     return await product.save();
 }
 
-exports.get = async (limit, page, fields) => {
-    return await Product.paginate({ active: true }, { page: page, limit: limit, select: fields });
+exports.get = async (filters, limit, page, fields) => {
+    /*populate: ['author'], sort: '-createdAt' */
+    //return await Product.paginate({ active: true }, { page: page, limit: limit, select: fields });
+    return await Product.paginate(filters, { page: page, limit: limit, select: fields });
 };
 
 exports.getByTag = async (limit, page, tag, fields) => {

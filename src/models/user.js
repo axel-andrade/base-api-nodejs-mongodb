@@ -44,7 +44,7 @@ UserSchema.methods.comparePassword = (plaintext, callback) => {
 };
 
 //before save
-UserSchema.pre("save", async (next) => {
+UserSchema.pre("save", async function (next) {
     if (!this.isModified("password")) {
         return next();
     }

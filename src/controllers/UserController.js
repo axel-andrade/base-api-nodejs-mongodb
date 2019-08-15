@@ -5,6 +5,7 @@ const repository = require('../repositories/UserRepository');
 const Mail = require('../services/email-service.js');
 const mongoose = require('mongoose');
 const User = mongoose.model('User');
+const Queue = require('../services/Queue');
 
 class UserController {
     async getById(req, res) {
@@ -21,7 +22,12 @@ class UserController {
 
         try {
             let user = await repository.create(req.body);
-            Mail.welcomeEmail(req.body.name, req.body.email, null);
+            let { name, email } = req.body;
+            //Mail.welcomeEmail(req.body.name, req.body.email, null);
+            Queue.create("SendEmail", {
+                name, email, language: null
+            }).save();
+
             res.status(201).send(user);
         } catch (e) {
             res.status(400).send(e);

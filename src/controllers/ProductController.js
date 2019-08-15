@@ -7,9 +7,19 @@ class ProductController {
     async get(req, res, next) {
         let limit = parseInt(req.query.limit) || 10000;
         let page = parseInt(req.query.page) || 1;
+        let filters = {};
+        let { min, max, title } = req.query;
+
+        if (min)
+            filters.price.$gte = min;
+        if (max)
+            filters.price.$gte = min;
+        if (title)
+            filters.title = new RegExp(title, i);
+        filters.active = true;
 
         try {
-            let products = await repository.get(limit, page, req.body.fields);
+            let products = await repository.get(filters, limit, page, req.body.fields);
             res.status(200).send(products);
         } catch (e) {
             res.status(400).send(e);
